@@ -3,6 +3,7 @@ import { sign } from 'jsonwebtoken'
 import { getRepository, Repository } from 'typeorm'
 import User from '@/users/models/User'
 import authConfig from '@/config/auth'
+import AppError from '@/errors/AppError'
 
 interface UserWithoutPassword {
   id: string
@@ -42,7 +43,7 @@ export default class AuthenticateUserService {
     const user = await this.usersRepository.findOne({ where: { email } })
 
     if (!user) {
-      throw new Error('Email/password combination not found!')
+      throw new AppError('Incorrect email/password combination.', 401)
     }
 
     return user
@@ -55,7 +56,7 @@ export default class AuthenticateUserService {
     const passwordMatched = await compare(clientPassword, hashedPassword)
 
     if (!passwordMatched) {
-      throw new Error('Email/password combination not found!')
+      throw new AppError('Incorrect email/password combination.', 401)
     }
   }
 
