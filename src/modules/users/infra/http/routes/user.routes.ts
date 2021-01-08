@@ -3,7 +3,7 @@ import multer from 'multer'
 import uploadConfig from '@/config/upload'
 import CreateUserService from '@/users/services/CreateUserService'
 import UpdateUserAvatarService from '@/users/services/UpdateUserAvatarService'
-import ensureAuthenticated from '@/middlewares/ensureAuthenticated'
+import ensureAuthenticated from '@/infra/http/middlewares/ensureAuthenticated'
 
 const usersRouter = Router()
 const upload = multer(uploadConfig)

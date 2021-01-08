@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm'
-import User from '@/users/models/User'
+import User from '@/users/infra/typeorm/entities/User'
 
 @Entity('appointments')
 class Appointment {

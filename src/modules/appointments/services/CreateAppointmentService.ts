@@ -1,33 +1,26 @@
 import { startOfHour } from 'date-fns'
-import { getCustomRepository } from 'typeorm'
-import Appointment from '@/appointments/models/Appointment'
-import AppointmentsRepository from '../repositories/AppointmentsRepository'
+import Appointment from '@/appointments/infra/typeorm/entities/Appointment'
+import IAppointmentsRepository from '@/appointments/repositories/IAppointmentsRepository'
 import AppError from '@/errors/AppError'
 
-interface RequestDTO {
+interface IRequestDTO {
   date: Date
   provider_id: string
 }
 
 class CreateAppointmentService {
-  readonly appointmentsRepository: AppointmentsRepository
-
-  constructor() {
-    this.appointmentsRepository = getCustomRepository(AppointmentsRepository)
-  }
+  constructor(private appointmentsRepository: IAppointmentsRepository) {}
 
   public async execute({
     provider_id,
     date,
-  }: RequestDTO): Promise<Appointment> {
+  }: IRequestDTO): Promise<Appointment> {
     const appointmentDate = await this.handleDate(date)
 
-    const appointment = this.appointmentsRepository.create({
+    const appointment = await this.appointmentsRepository.create({
       provider_id,
       date: appointmentDate,
     })
-
-    await this.appointmentsRepository.save(appointment)
 
     return appointment
   }

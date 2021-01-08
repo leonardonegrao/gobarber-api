@@ -1,7 +1,7 @@
 import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { getRepository, Repository } from 'typeorm'
-import User from '@/users/models/User'
+import User from '@/users/infra/typeorm/entities/User'
 import authConfig from '@/config/auth'
 import AppError from '@/errors/AppError'
 

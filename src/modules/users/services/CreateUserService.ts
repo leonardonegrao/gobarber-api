@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs'
 import { getRepository, Repository } from 'typeorm'
-import User from '@/users/models/User'
+import User from '@/users/infra/typeorm/entities/User'
 import AppError from '@/errors/AppError'
 
 interface Request {

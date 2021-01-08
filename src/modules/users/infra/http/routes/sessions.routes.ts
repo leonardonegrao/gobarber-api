@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import AuthenticateUserService from '@/sessions/services/AuthenticateUserService'
+import AuthenticateUserService from '@/users/services/AuthenticateUserService'
 
 const sessionsRouter = Router()
 
