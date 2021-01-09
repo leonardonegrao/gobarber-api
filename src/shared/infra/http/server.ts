@@ -6,6 +6,7 @@ import routes from './routes'
 import uploadConfig from '@/config/upload'
 
 import '../typeorm'
+import '../../container'
 import AppError from '@/errors/AppError'
 
 const app = express()

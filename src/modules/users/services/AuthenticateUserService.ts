@@ -1,35 +1,37 @@
 import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
-import { getRepository, Repository } from 'typeorm'
+import { injectable, inject } from 'tsyringe'
+
 import User from '@/users/infra/typeorm/entities/User'
 import authConfig from '@/config/auth'
 import AppError from '@/errors/AppError'
+import IUsersRepository from '../repositories/IUsersRepository'
 
-interface UserWithoutPassword {
+interface IUserWithoutPassword {
   id: string
   name: string
   email: string
   password?: string
 }
 
-interface Request {
+interface IRequest {
   email: string
   password: string
 }
 
-interface Response {
-  user: UserWithoutPassword
+interface IResponse {
+  user: IUserWithoutPassword
   token: string
 }
 
+@injectable()
 export default class AuthenticateUserService {
-  readonly usersRepository: Repository<User>
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository
+  ) {}
 
-  constructor() {
-    this.usersRepository = getRepository(User)
-  }
-
-  public async execute({ email, password }: Request): Promise<Response> {
+  public async execute({ email, password }: IRequest): Promise<IResponse> {
     const user = await this.findUser(email)
     await this.comparePassword(password, user.password)
 
@@ -40,7 +42,7 @@ export default class AuthenticateUserService {
   }
 
   private async findUser(email: string): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { email } })
+    const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
       throw new AppError('Incorrect email/password combination.', 401)
@@ -71,8 +73,8 @@ export default class AuthenticateUserService {
     return token
   }
 
-  private removeSensitiveDataOfUser(user: User): UserWithoutPassword {
-    const userWithoutPassword: UserWithoutPassword = user
+  private removeSensitiveDataOfUser(user: User): IUserWithoutPassword {
+    const userWithoutPassword: IUserWithoutPassword = user
     delete userWithoutPassword.password
 
     return userWithoutPassword
