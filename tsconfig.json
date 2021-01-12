@@ -12,7 +12,8 @@
       "@/users/*" : ["modules/users/*"],
       "@/config/*": ["config/*"],
       "@/errors/*": ["shared/errors/*"],
-      "@/infra/*": ["shared/infra/*"]
+      "@/infra/*": ["shared/infra/*"],
+      "@/shared/*": ["shared/*"]
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,
