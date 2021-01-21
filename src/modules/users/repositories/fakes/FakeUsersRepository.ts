@@ -31,6 +31,16 @@ class FakeUsersRepository implements IUsersRepository {
     return user
   }
 
+  public async findAllProviders(exclude_user_id: string): Promise<User[]> {
+    let users = this.users
+
+    if (exclude_user_id) {
+      users = this.users.filter(user => user.id !== exclude_user_id)
+    }
+
+    return users
+  }
+
   public async findById(id: string): Promise<User | undefined> {
     const user = this.users.find(user => user.id === id)
 
