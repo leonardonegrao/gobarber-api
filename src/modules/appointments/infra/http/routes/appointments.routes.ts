@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { celebrate, Segments, Joi } from 'celebrate'
 
 import ensureAuthenticated from '@/infra/http/middlewares/ensureAuthenticated'
 import AppointmentsController from '../controllers/AppointmentsController'
@@ -8,6 +9,15 @@ const appointmentsController = new AppointmentsController()
 
 appointmentsRouter.use(ensureAuthenticated)
 
-appointmentsRouter.post('/', appointmentsController.create)
+appointmentsRouter.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      provider_id: Joi.string().uuid().required(),
+      date: Joi.date(),
+    },
+  }),
+  appointmentsController.create
+)
 
 export default appointmentsRouter
