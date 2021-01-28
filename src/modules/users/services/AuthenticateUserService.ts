@@ -8,20 +8,13 @@ import AppError from '@/errors/AppError'
 import IHashProvider from '../providers/HashProvider/models/IHashProvider'
 import IUsersRepository from '../repositories/IUsersRepository'
 
-interface IUserWithoutPassword {
-  id: string
-  name: string
-  email: string
-  password?: string
-}
-
 interface IRequest {
   email: string
   password: string
 }
 
 interface IResponse {
-  user: IUserWithoutPassword
+  user: User
   token: string
 }
 
@@ -39,9 +32,8 @@ export default class AuthenticateUserService {
     await this.comparePassword(password, user.password)
 
     const token = this.generateToken(user.id)
-    const safeToReturnUser = this.removeSensitiveDataOfUser(user)
 
-    return { user: safeToReturnUser, token }
+    return { user, token }
   }
 
   private async findUser(email: string): Promise<User> {
@@ -71,18 +63,15 @@ export default class AuthenticateUserService {
   private generateToken(userId: string) {
     const { secret, expiresIn } = authConfig.jwt
 
+    if (!secret) {
+      throw new AppError('Internal server error', 500)
+    }
+
     const token = sign({}, secret, {
       subject: userId,
       expiresIn,
     })
 
     return token
-  }
-
-  private removeSensitiveDataOfUser(user: User): IUserWithoutPassword {
-    const userWithoutPassword: IUserWithoutPassword = user
-    delete userWithoutPassword.password
-
-    return userWithoutPassword
   }
 }
